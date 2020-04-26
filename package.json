@@ -1,0 +1,33 @@
+{
+  "name": "bulk-update-versions",
+  "version": "1.0.0",
+  "description": "Script to bulk update versions matching a certain pattern",
+  "bugs": "https://github.com/emmenko/bulk-update-versions/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emmenko/bulk-update-versions.git"
+  },
+  "keywords": [
+    "dependencies",
+    "update",
+    "bulk"
+  ],
+  "license": "MIT",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "bulk-update-versions": "bin/bulk-update-versions.js"
+  },
+  "dependencies": {
+    "execa": "^4.0.0",
+    "globby": "^11.0.0",
+    "listr": "~0.14.3",
+    "mri": "^1.1.5",
+    "semver": "~7.3.2",
+    "rcfile": "^1.0.3",
+    "p-map": "^4.0.0",
+    "prettier": "^2.0.4"
+  }
+}
