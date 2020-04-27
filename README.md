@@ -1,7 +1,7 @@
 # Bulk update versions
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/emmenko/bulk-update-versions"><img src="https://badgen.net/npm/v/emmenko/bulk-update-versions" alt="Latest release (latest dist-tag)" /></a> <a href="https://github.com/emmenko/bulk-update-versions/blob/master/LICENSE"><img src="https://badgen.net/github/license/emmenko/bulk-update-versions" alt="GitHub license" /></a>
+  <a href="https://www.npmjs.com/package/bulk-update-versions"><img src="https://badgen.net/npm/v/bulk-update-versions" alt="Latest release (latest dist-tag)" /></a> <a href="https://github.com/emmenko/bulk-update-versions/blob/master/LICENSE"><img src="https://badgen.net/github/license/emmenko/bulk-update-versions" alt="GitHub license" /></a>
 </p>
 
 Script to bulk update versions matching a certain pattern.
