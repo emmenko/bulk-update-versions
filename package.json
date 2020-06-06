@@ -17,6 +17,13 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "bin",
+    "lib",
+    "LICENSE",
+    "package.json",
+    "README.md"
+  ],
   "bin": {
     "bulk-update-versions": "bin/bulk-update-versions.js"
   },
@@ -29,5 +36,9 @@
     "rcfile": "^1.0.3",
     "p-map": "^4.0.0",
     "prettier": "^2.0.4"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "0.2.6",
+    "@changesets/cli": "2.8.0"
   }
 }
