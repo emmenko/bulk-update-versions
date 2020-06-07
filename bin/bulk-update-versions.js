@@ -90,17 +90,18 @@ const updateDependencies = async (dependencies) =>
     if (!matchingPackages.test(name)) {
       return { ...updatedDependencies, [name]: version };
     }
+
     // If the current dependency version differs from the version that we
     // are trying to update to, we need to check if the package has a published
     // version that match the requested version.
     // For instance, if the package has version `1.0.0`, the requested version
     // is `1.3.0`, and the package does not have have any published `1.3.0` version,
     // we should not update the version.
-    if (version !== versionToUpdate) {
+    if (!semver.satisfies(versionToUpdate, version)) {
       log(
-        `Package ${name} has version ${version}, requested version is ${versionToUpdate}`
+        `Package ${name} has version ${version} but requested version was ${versionToUpdate}`
       );
-      // Fetch the published versions of the give package, if it's not in the cache.
+      // Fetch the published versions of the given package, if it's not in the cache.
       if (!dependenciesCache.has(name)) {
         const remotePublishedVersions = await fetchRemotePublishedVersions(
           name
@@ -108,11 +109,23 @@ const updateDependencies = async (dependencies) =>
         dependenciesCache.set(name, remotePublishedVersions);
       }
       const publishedVersions = dependenciesCache.get(name);
+
       // If the requested version is included in the list of published versions,
       // then update the version in the package.json.
       if (publishedVersions.includes(versionToUpdate)) {
         log(`Package ${name} can be updated to version ${versionToUpdate}`);
-        return { ...updatedDependencies, [name]: versionToUpdate };
+        // Attempt to keep the preserved range
+        let versionToUpdateWithPreservedRange = version
+          .replace(/\~(.*)$/, `~${versionToUpdate}`)
+          .replace(/\^(.*)$/, `^${versionToUpdate}`);
+        // ...otherwise fall back to the fixed given version
+        if (versionToUpdateWithPreservedRange === version) {
+          versionToUpdateWithPreservedRange = versionToUpdate;
+        }
+        return {
+          ...updatedDependencies,
+          [name]: versionToUpdateWithPreservedRange,
+        };
       }
     }
     return { ...updatedDependencies, [name]: version };
