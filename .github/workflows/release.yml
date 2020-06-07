@@ -66,6 +66,8 @@ jobs:
       - name: Publishing canary releases to npm registry
         if: steps.changesets.outputs.published != 'true'
         run: |
+          git clean -df
+          git reset --hard HEAD
           yarn changeset version --snapshot canary
           yarn changeset publish --tag canary
         env:
