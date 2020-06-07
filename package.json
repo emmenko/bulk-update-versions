@@ -1,6 +1,6 @@
 {
   "name": "bulk-update-versions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Script to bulk update versions matching a certain pattern",
   "bugs": "https://github.com/emmenko/bulk-update-versions/issues",
   "repository": {
