@@ -19,5 +19,13 @@ Certain dependencies are usually released and updated in bulk as they follow a s
 To make this process simpler, you can use this package to bump all versions of dependencies matching the given pattern. The script will make sure that the versions of the packages matching the given pattern do exist, and bump the version only then.
 
 ```
-$ bulk-update-versions 7.9.2  --match '^@babel/(.*)'
+$ bulk-update-versions --match '^@babel/(.*)' 7.9.2
+```
+
+### Force updating to `latest` version
+
+If you want to update all the matching packages to their `latest` version, you can pass the `--force-latest` flag instead of a fixed version.
+
+```
+$ bulk-update-versions --match '^@babel/(.*)' --force-latest
 ```
