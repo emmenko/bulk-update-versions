@@ -13,11 +13,17 @@ const getPackages = require("../lib/packages");
 const prettierConfig = rcfile("prettier");
 
 const flags = mri(process.argv.slice(2), {
+  boolean: { "force-latest": false },
   alias: { help: ["h"] },
 });
 const commands = flags._;
 
-if (commands.length === 0 || (flags.help && commands.length === 0)) {
+const isForceLatest = Boolean(flags["force-latest"]);
+
+if (
+  (!isForceLatest && commands.length === 0) ||
+  (flags.help && commands.length === 0)
+) {
   console.log(`
 Usage: update-versions [version] [options]
 
@@ -30,23 +36,25 @@ published under a single version.
 Options:
 
  --match <pattern>    A regular expression to match package names that needs to be updated.
+ --force-latest       Force using the latest published versions. The given version argument is ignored.
   `);
   process.exit(0);
 }
 
-const [versionToUpdate] = commands;
-
-if (!versionToUpdate) {
-  throw new Error("Missing command argument [version].");
-}
-if (!semver.valid(versionToUpdate)) {
-  throw new Error(
-    `Invalid [version] argument ${versionToUpdate}. Please provide a valid SemVer value.`
-  );
-}
 if (!flags.match) {
   throw new Error(
     "Missing required option --match. Please provide a valid regular expression."
+  );
+}
+
+const [versionToUpdate] = commands;
+
+if (!isForceLatest && !versionToUpdate) {
+  throw new Error("Missing command argument [version].");
+}
+if (!isForceLatest && !semver.valid(versionToUpdate)) {
+  throw new Error(
+    `Invalid [version] argument ${versionToUpdate}. Please provide a valid SemVer value.`
   );
 }
 
@@ -72,7 +80,7 @@ const writeFile = (filePath, data) => {
   });
 };
 
-const fetchRemotePublishedVersions = async (packageName) => {
+const fetchPackageInfo = async (packageName) => {
   const result = await execa("npm", ["view", packageName, "--json"], {
     silent: true,
     encoding: "utf-8",
@@ -80,7 +88,11 @@ const fetchRemotePublishedVersions = async (packageName) => {
   if (result.failed) {
     throw new Error(result.stderr);
   }
-  return JSON.parse(result.stdout).versions;
+  const packageInfo = JSON.parse(result.stdout);
+  return {
+    versions: packageInfo.versions,
+    latest: packageInfo["dist-tags"].latest,
+  };
 };
 
 const updateDependencies = async (dependencies) =>
@@ -97,30 +109,35 @@ const updateDependencies = async (dependencies) =>
     // For instance, if the package has version `1.0.0`, the requested version
     // is `1.3.0`, and the package does not have have any published `1.3.0` version,
     // we should not update the version.
-    if (!semver.satisfies(versionToUpdate, version)) {
+    // If the flag `force-latest` is provided, the published version in the `latest`
+    // dist-tag is used instead.
+    if (isForceLatest || !semver.satisfies(versionToUpdate, version)) {
       log(
-        `Package ${name} has version ${version} but requested version was ${versionToUpdate}`
+        `Package ${name} has version ${version} but requested version was ${
+          isForceLatest ? "latest" : versionToUpdate
+        }`
       );
       // Fetch the published versions of the given package, if it's not in the cache.
       if (!dependenciesCache.has(name)) {
-        const remotePublishedVersions = await fetchRemotePublishedVersions(
-          name
-        );
-        dependenciesCache.set(name, remotePublishedVersions);
+        dependenciesCache.set(name, await fetchPackageInfo(name));
       }
-      const publishedVersions = dependenciesCache.get(name);
+      const packageInfo = dependenciesCache.get(name);
+
+      const matchedVersion = isForceLatest
+        ? packageInfo.latest
+        : versionToUpdate;
 
       // If the requested version is included in the list of published versions,
       // then update the version in the package.json.
-      if (publishedVersions.includes(versionToUpdate)) {
-        log(`Package ${name} can be updated to version ${versionToUpdate}`);
+      if (packageInfo.versions.includes(matchedVersion)) {
+        log(`Package ${name} can be updated to version ${matchedVersion}`);
         // Attempt to keep the preserved range
         let versionToUpdateWithPreservedRange = version
-          .replace(/\~(.*)$/, `~${versionToUpdate}`)
-          .replace(/\^(.*)$/, `^${versionToUpdate}`);
+          .replace(/\~(.*)$/, `~${matchedVersion}`)
+          .replace(/\^(.*)$/, `^${matchedVersion}`);
         // ...otherwise fall back to the fixed given version
         if (versionToUpdateWithPreservedRange === version) {
-          versionToUpdateWithPreservedRange = versionToUpdate;
+          versionToUpdateWithPreservedRange = matchedVersion;
         }
         return {
           ...updatedDependencies,
