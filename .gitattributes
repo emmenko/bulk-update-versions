@@ -1,0 +1,5 @@
+# .gitattributes
+*.zip binary
+# GitHub Linguist Override
+.yarn/* linguist-vendored
+.pnp.js linguist-vendored
