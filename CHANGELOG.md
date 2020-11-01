@@ -1,5 +1,11 @@
 # bulk-update-versions
 
+## 1.1.1
+
+### Patch Changes
+
+- [`51da693`](https://github.com/emmenko/bulk-update-versions/commit/51da693a1c2acc6192af363ea4feb8eec03b2f9c) [#19](https://github.com/emmenko/bulk-update-versions/pull/19) Thanks [@emmenko](https://github.com/emmenko)! - Do not fail when lerna.json is not defined
+
 ## 1.1.0
 
 ### Minor Changes
