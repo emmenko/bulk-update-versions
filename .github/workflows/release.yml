@@ -41,8 +41,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Install dependencies
+      - name: Installing dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Running tests
+        run: yarn test
 
       - name: Creating .npmrc
         run: |
@@ -54,7 +57,7 @@ jobs:
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Release Pull Request or Publish to npm
+      - name: Creating Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@master
         with:
