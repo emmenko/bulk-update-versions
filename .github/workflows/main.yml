@@ -1,12 +1,17 @@
-name: Release
+name: Main workflow
 
+# The event triggers are configured as following:
+# - on branch master, trigger the workflow on every push
+# - on any pull request, trigger the workflow
+# This is to avoid running the workflow twice on pull requests.
 on:
   push:
     branches:
       - master
+  pull_request:
 
 jobs:
-  release:
+  build_lint_and_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,30 +49,5 @@ jobs:
       - name: Installing dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            email=$NPM_EMAIL
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Creating Release Pull Request or Publish to npm
-        id: changesets
-        uses: changesets/action@master
-        with:
-          publish: yarn changeset publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Publish canary releases only if the packages weren't published already
-      - name: Publishing canary releases to npm registry
-        if: steps.changesets.outputs.published != 'true'
-        run: |
-          git checkout master
-          yarn changeset version --snapshot canary
-          yarn changeset publish --tag canary
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Running tests
+        run: yarn test
