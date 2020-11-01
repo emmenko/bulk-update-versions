@@ -1,0 +1,12 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "gatsby": "2.0.0",
+    "gatsby-cli": "2.0.0"
+  }
+}

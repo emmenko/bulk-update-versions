@@ -1,0 +1,12 @@
+{
+  "name": "package-a",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "react": "16.14.0",
+    "react-dom": "16.14.0"
+  },
+  "peerDependencies": {
+    "react": "16.x"
+  }
+}

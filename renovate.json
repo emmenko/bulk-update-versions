@@ -17,5 +17,12 @@
   ],
   "lockFileMaintenance": {
     "enabled": true
-  }
+  },
+  "ignoreDeps": [
+    "gastby",
+    "gastby-cli",
+    "react",
+    "react-dom",
+    "react-intl"
+  ]
 }
