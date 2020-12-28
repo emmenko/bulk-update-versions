@@ -1,5 +1,11 @@
 # bulk-update-versions
 
+## 1.1.2
+
+### Patch Changes
+
+- [`0a797b0`](https://github.com/emmenko/bulk-update-versions/commit/0a797b07bcae653aad7f74edc1b9f994e2b0e405) [#27](https://github.com/emmenko/bulk-update-versions/pull/27) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency execa to v5
+
 ## 1.1.1
 
 ### Patch Changes
