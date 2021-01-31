@@ -1,7 +1,7 @@
 {
   "extends": [
     "config:base",
-    ":pinOnlyDevDependencies",
+    ":preserveSemverRanges",
     "schedule:weekly"
   ],
   "separateMajorMinor": true,
