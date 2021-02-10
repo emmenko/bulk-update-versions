@@ -1,3 +1,5 @@
+> This package has been deprecated. We recommend to use [`@manypkg/cli`](https://www.npmjs.com/package/@manypkg/cli) with the `upgrade` command which essentially does the same thing.
+
 # Bulk update versions
 
 <p align="center">
